@@ -12,9 +12,13 @@ describe("Crowdfunding", function () {
   const CONTRIBUTION2 = parseEther("3");
 
   beforeEach(async function () {
+    const campaignTitle = "Sample Crowdfunding Campaign";
+
     Crowdfunding = await ethers.getContractFactory("Crowdfunding");
-    [owner, contributor1, contributor2] = await ethers.getSigners();
-    crowdfunding = await Crowdfunding.deploy(DURATION, GOAL_AMOUNT);
+    crowdfunding = await Crowdfunding.deploy(campaignTitle, DURATION, GOAL_AMOUNT);
+    await crowdfunding.deployed();
+
+    [owner, contributor1, contributor2, _] = await ethers.getSigners();
   });
 
   describe("contribute", function () {
@@ -59,7 +63,7 @@ describe("Crowdfunding", function () {
     beforeEach(async function () {
       await contributor1.sendTransaction({ to: crowdfunding.address, value: CONTRIBUTION1 });
       await contributor2.sendTransaction({ to: crowdfunding.address, value: CONTRIBUTION2 });
-      await advanceTimeAndBlock(await ethers.provider, DURATION + 1);
+      await advanceTimeAndBlock(ethers.provider, DURATION + 1);
     });
 
     it("should refund contributions if goal not reached", async function () {
@@ -75,12 +79,13 @@ describe("Crowdfunding", function () {
       expect(finalBalance).to.equal(expectedBalance);
       expect(await crowdfunding.contributions(contributor1.address)).to.equal(0);
     });
-
     it("should not allow refunds if goal reached", async function () {
-      // Deploy a new instance of the crowdfunding contract with a longer duration
+      // Deploy a new instance of the crowdfunding contract with a shorter duration
       const Crowdfunding = await ethers.getContractFactory("Crowdfunding");
       const DURATION = 24 * 60 * 60; // 24 hours
-      const newCrowdfunding = await Crowdfunding.deploy(DURATION, GOAL_AMOUNT);
+      const campaignTitle = "Sample Crowdfunding Campaign";
+      const newCrowdfunding = await Crowdfunding.deploy(campaignTitle, DURATION, GOAL_AMOUNT);
+    
       await newCrowdfunding.deployed();
     
       await contributor1.sendTransaction({ to: newCrowdfunding.address, value: GOAL_AMOUNT });
@@ -93,8 +98,91 @@ describe("Crowdfunding", function () {
       await provider.send("evm_mine");
     
       await expect(newCrowdfunding.connect(contributor1).refund()).to.be.revertedWith("Goal reached, cannot refund.");
-    });
-    
-      
+    });   
   });
+  
+  describe("getContributors", function () {
+    it("should return an empty array when no contributors", async function () {
+      const contributorsArray = await crowdfunding.getContributors();
+      expect(contributorsArray.length).to.equal(0);
+    });
+  
+    it("should return an array with correct contributors", async function () {
+      await contributor1.sendTransaction({ to: crowdfunding.address, value: CONTRIBUTION1 });
+      await contributor2.sendTransaction({ to: crowdfunding.address, value: CONTRIBUTION2 });
+  
+      const contributorsArray = await crowdfunding.getContributors();
+      expect(contributorsArray.length).to.equal(2);
+      expect(contributorsArray).to.include(contributor1.address);
+      expect(contributorsArray).to.include(contributor2.address);
+    });
+  });
+  
+  describe("getTotalContributors", function () {
+    it("should return 0 when no contributors", async function () {
+      const totalContributors = await crowdfunding.getTotalContributors();
+      expect(totalContributors).to.equal(0);
+    });
+  
+    it("should return the correct number of contributors", async function () {
+      await contributor1.sendTransaction({ to: crowdfunding.address, value: CONTRIBUTION1 });
+      await contributor2.sendTransaction({ to: crowdfunding.address, value: CONTRIBUTION2 });
+  
+      const totalContributors = await crowdfunding.getTotalContributors();
+      expect(totalContributors).to.equal(2);
+    });
+  });
+  
+  describe("isCampaignSuccessful", function () {
+    it("should return false when the goal is not reached", async function () {
+      await contributor1.sendTransaction({ to: crowdfunding.address, value: CONTRIBUTION1 });
+      await contributor2.sendTransaction({ to: crowdfunding.address, value: CONTRIBUTION2 });
+  
+      const isCampaignSuccessful = await crowdfunding.isCampaignSuccessful();
+      expect(isCampaignSuccessful).to.be.false;
+    });
+  
+    it("should return true when the goal is reached", async function () {
+      await contributor1.sendTransaction({ to: crowdfunding.address, value: GOAL_AMOUNT });
+  
+      const isCampaignSuccessful = await crowdfunding.isCampaignSuccessful();
+      expect(isCampaignSuccessful).to.be.true;
+    });
+  });  
+  describe("getRemainingTime", function () {
+    it("should return the remaining time", async function () {
+      const secondsToAdvance = 10;
+      await advanceTimeAndBlock(ethers.provider, secondsToAdvance);
+  
+      const remainingTime = await crowdfunding.getRemainingTime();
+      const lowerBound = DURATION - 5 - secondsToAdvance;
+      const upperBound = DURATION + 5 - secondsToAdvance;
+      expect(remainingTime).to.be.within(lowerBound, upperBound); // Allow 5 seconds of tolerance
+    });
+  });
+  
+  describe("isContributor", function () {
+    it("should return false for non-contributors", async function () {
+      const isContributor = await crowdfunding.isContributor(contributor1.address);
+      expect(isContributor).to.be.false;
+    });
+  
+    it("should return true for contributors", async function () {
+      await contributor1.sendTransaction({ to: crowdfunding.address, value: parseEther("1") });
+      const isContributor = await crowdfunding.isContributor(contributor1.address);
+      expect(isContributor).to.be.true;
+    });
+  });
+  
+  describe("getContribution", function () {
+    it("should return the correct contribution amount", async function () {
+      const contributionAmount = parseEther("1");
+      await contributor1.sendTransaction({ to: crowdfunding.address, value: contributionAmount });
+  
+      const contributedAmount = await crowdfunding.getContribution(contributor1.address);
+      expect(contributedAmount).to.equal(contributionAmount);
+    });
+  });
+  
 });
+
