@@ -47,6 +47,26 @@ contract Crowdfunding {
         return endTime - block.timestamp;
     }
 
+    //Function that allows the owner to update the campaign title
+    function updateCampaignTitle(string memory newTitle) public {
+        require(msg.sender == owner, "Only owner can update campaign title.");
+        campaignTitle = newTitle;
+    }
+
+    //Function that allows the owner to update the end time of campaign, it requires an end time in the future
+    function updateEndTime(uint256 newEndTime) public {
+        require(msg.sender == owner, "Only owner can update campaign end time.");
+        require(newEndTime > block.timestamp, "End time must be in the future.");
+        endTime = newEndTime;
+    }
+
+    //Function that allows the owner to update the goal amount of campaign, it requires an amount greater than 0
+    function updateGoalAmount(uint256 newGoalAmount) public {
+        require(msg.sender == owner, "Only owner can update goal amount.");
+        require(newGoalAmount > 0, "Goal amount must be greater than 0.");
+        goalAmount = newGoalAmount;
+    }
+
     function isContributor(address contributor) public view returns (bool) {
         return contributions[contributor] > 0;
     }
