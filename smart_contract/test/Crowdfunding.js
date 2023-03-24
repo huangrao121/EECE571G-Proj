@@ -184,5 +184,58 @@ describe("Crowdfunding", function () {
     });
   });
   
+  describe("updateCampaignTitle", function () {
+    it("should allow owner to update campaign end time", async function () {
+      const newEndTime = Math.floor(Date.now() / 10) + 86400; // set new end time to 1 day from now
+      await crowdfunding.connect(owner).updateEndTime(newEndTime);
+      expect(await crowdfunding.endTime()).to.equal(newEndTime);
+    });
+
+    it("should update the campaign title if called by the owner", async function () {
+      const newTitle = "New Campaign Title";
+      await crowdfunding.connect(owner).updateCampaignTitle(newTitle);
+      expect(await crowdfunding.campaignTitle()).to.equal(newTitle);
+    });
+
+    it("should not allow non-owner to update the campaign title", async function () {
+      const newTitle = "New Campaign Title";
+      await expect(crowdfunding.connect(contributor1).updateCampaignTitle(newTitle)).to.be.revertedWith("Only owner can update campaign title.");
+    });
+  });
+
+  
+  describe("updateEndTime", function () {
+    it("should not allow non-owner to update end time", async function () {
+      const newEndTime = Math.floor(Date.now() / 1000) + 3600; // one hour from now
+      await expect(crowdfunding.connect(contributor1).updateEndTime(newEndTime)).to.be.revertedWith(
+        "Only owner can update campaign end time."
+      );
+    });
+  
+    it("should not allow end time in the past", async function () {
+      const newEndTime = Math.floor(Date.now() / 1000) - 3600; // one hour ago
+      await expect(crowdfunding.connect(owner).updateEndTime(newEndTime)).to.be.revertedWith(
+        "End time must be in the future."
+      );
+    });
+  });
+
+  describe("updateGoalAmount", function () {
+    const NEW_GOAL_AMOUNT = parseEther("20");
+  
+    it("should update the goal amount", async function () {
+      await crowdfunding.connect(owner).updateGoalAmount(NEW_GOAL_AMOUNT);
+      expect(await crowdfunding.goalAmount()).to.equal(NEW_GOAL_AMOUNT);
+    });
+  
+    it("should not allow non-owner to update the goal amount", async function () {
+      await expect(crowdfunding.connect(contributor1).updateGoalAmount(NEW_GOAL_AMOUNT)).to.be.revertedWith("Only owner can update goal amount.");
+    });
+  
+    it("should not allow goal amount to be set to zero", async function () {
+      await expect(crowdfunding.connect(owner).updateGoalAmount(0)).to.be.revertedWith("Goal amount must be greater than 0.");
+    });
+  });
+
 });
 
