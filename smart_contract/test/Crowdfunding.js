@@ -237,5 +237,66 @@ describe("Crowdfunding", function () {
     });
   });
 
-});
+  describe("closeCampaign", function () {
+    it("should not allow non-owner to close the campaign", async function () {
+      await expect(crowdfunding.connect(contributor1).closeCampaign()).to.be.revertedWith("Only owner can close campaign.");
+    });
+  });
+  
+  describe("updateContribution", function () {
+    beforeEach(async function () {
+        await contributor1.sendTransaction({ to: crowdfunding.address, value: CONTRIBUTION1 });
+        await contributor2.sendTransaction({ to: crowdfunding.address, value: CONTRIBUTION2 });
+    });
 
+    it("should revert if the campaign has ended", async function () {
+        // Increase the block time to close the crowdfunding
+        const provider = ethers.provider;
+        const currentTime = (await provider.getBlock()).timestamp;
+        const timeToAdvance = DURATION + 1;
+        await provider.send("evm_increaseTime", [timeToAdvance]);
+        await provider.send("evm_mine");
+
+        await expect(crowdfunding.connect(contributor1).updateContribution()).to.be.revertedWith("Crowdfunding is closed.");
+    });
+
+    it("should revert if the contributor has not made any contributions", async function () {
+        await expect(crowdfunding.connect(owner).updateContribution()).to.be.revertedWith("No contribution to update.");
+    });
+
+    it("should update the contribution amount", async function () {
+        const newContribution = parseEther("4");
+        const initialTotalRaised = await crowdfunding.totalRaised();
+        const initialContributorBalance = await contributor1.getBalance();
+
+        await crowdfunding.connect(contributor1).updateContribution({ value: newContribution });
+
+        const updatedTotalRaised = await crowdfunding.totalRaised();
+        const updatedContributorBalance = await contributor1.getBalance();
+
+        expect(await crowdfunding.contributions(contributor1.address)).to.equal(newContribution);
+        expect(updatedTotalRaised).to.equal(initialTotalRaised.sub(CONTRIBUTION1).add(newContribution));
+        expect(updatedContributorBalance).to.be.lessThan(initialContributorBalance.sub(newContribution));
+    });
+  });
+
+  describe("getPercentageRaised", function () {
+    it("should return 0 if no contributions have been made", async function () {
+      const percentageRaised = await crowdfunding.getPercentageRaised();
+      expect(percentageRaised).to.equal(0);
+    });
+  
+    it("should return the correct percentage if contributions have been made", async function () {
+      await contributor1.sendTransaction({ to: crowdfunding.address, value: parseEther("5") });
+      const percentageRaised = await crowdfunding.getPercentageRaised();
+      expect(percentageRaised).to.equal(50);
+    });
+  
+    it("should return 100 if goal has been reached", async function () {
+      await contributor1.sendTransaction({ to: crowdfunding.address, value: parseEther("10") });
+      const percentageRaised = await crowdfunding.getPercentageRaised();
+      expect(percentageRaised).to.equal(100);
+    });
+  });
+
+});

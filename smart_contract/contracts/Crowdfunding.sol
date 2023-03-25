@@ -67,6 +67,26 @@ contract Crowdfunding {
         goalAmount = newGoalAmount;
     }
 
+    //Function that allows the owner to close the campaign
+    function closeCampaign() external {
+        require(msg.sender == owner, "Only owner can close campaign.");
+        require(totalRaised >= goalAmount, "Goal not reached.");
+        endTime = block.timestamp;
+    }
+
+    //Function that allows contributors to update their contributions
+    function updateContribution() external payable {
+        require(block.timestamp < endTime, "Crowdfunding is closed.");
+        require(contributions[msg.sender] > 0, "No contribution to update.");
+        totalRaised = totalRaised - contributions[msg.sender] + msg.value;
+        contributions[msg.sender] = msg.value;
+    }
+
+    //Function that calculates the percentage of the goal that has been reached
+    function getPercentageRaised() public view returns (uint256) {
+        return (totalRaised * 100) / goalAmount;
+    }
+
     function isContributor(address contributor) public view returns (bool) {
         return contributions[contributor] > 0;
     }
