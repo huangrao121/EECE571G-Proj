@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 import './App.css';
 import Navigator from './components/navigator/navigator'
@@ -17,6 +18,15 @@ function App() {
         <Route path="/createNewProj" component={Create}/>
         <Route path="/" component={Display}/>
       </Switch>
+=======
+import logo from "./logo.svg";
+import "./App.css";
+import Navigator from "./components/navigator/navigator";
+function App() {
+  return (
+    <div className="App">
+      <Navigator />
+>>>>>>> hj
     </div>
   );
 }
