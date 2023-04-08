@@ -4,17 +4,22 @@ pragma solidity ^0.8.0;
 contract Crowdfunding {
     address payable public owner;
     string public campaignTitle;
+    string public description;
     uint256 public endTime;
+    uint256 public minimum;
     uint256 public goalAmount;
     uint256 public totalRaised;
     mapping(address => uint256) public contributions;
     address[] private contributorsArray;
 
-    constructor(string memory title, uint256 duration, uint256 goal) {
+    constructor(string memory title, uint256 duration, uint256 goal, uint min, string memory descript) {
         owner = payable(msg.sender);
         campaignTitle = title;
+        description = descript;
+        minimum = min;
         endTime = block.timestamp + duration;
         goalAmount = goal;
+        totalRaised = 0;
     }
 
     receive() external payable {
