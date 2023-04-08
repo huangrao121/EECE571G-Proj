@@ -1,4 +1,3 @@
-
 import './App.css';
 import Navigator from './components/navigator/navigator'
 import Create from './components/create/create'
