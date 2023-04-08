@@ -1,6 +1,13 @@
 import React, { Component } from 'react'
 import './index.css'
 import { NavLink } from 'react-router-dom'
+import { connectWallet } from '../../utils/interact'
+
+const connectPressed = async () =>{
+    const walletResponse = await connectWallet();
+    console.log(walletResponse)
+}
+
 export default class navigator extends Component {
   render() {
     return (
@@ -16,7 +23,7 @@ export default class navigator extends Component {
             </form>
           </div>
           <div>
-            <button className='btn btn-success'>Connect</button>
+            <button className='btn btn-success' onClick={connectPressed}>Connect</button>
             <NavLink to="/createNewProj">
               <button className='btn btn-outline-success ms-2'>Launch</button>
             </NavLink>
