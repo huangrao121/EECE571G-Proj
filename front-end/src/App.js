@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+=======
+>>>>>>> 80d21e10c899037b1056427bbf0c1f977665f05a
 import './App.css';
 import Navigator from './components/navigator/navigator'
 import Create from './components/create/create'
@@ -16,6 +21,18 @@ function App() {
         <Route path="/createNewProj" component={Create}/>
         <Route path="/" component={Display}/>
       </Switch>
+<<<<<<< HEAD
+=======
+import logo from "./logo.svg";
+import "./App.css";
+import Navigator from "./components/navigator/navigator";
+function App() {
+  return (
+    <div className="App">
+      <Navigator />
+>>>>>>> hj
+=======
+>>>>>>> 80d21e10c899037b1056427bbf0c1f977665f05a
     </div>
   );
 }
