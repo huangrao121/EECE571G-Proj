@@ -1,5 +1,4 @@
-const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
-const Web3 = require("web3");
+// const Web3 = require("web3");
 // const web3 = new Web3("wss://polygon-mainnet.g.alchemy.com/v2/" + alchemyKey);
 // const contractABI = require("");
 // const contractAddress = "";
