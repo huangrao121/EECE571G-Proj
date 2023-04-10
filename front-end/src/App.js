@@ -2,6 +2,7 @@ import './App.css';
 import Navigator from './components/navigator/navigator'
 import Create from './components/create/create'
 import Display from './components/display/display'
+import Contribute from './components/contribute/contribute';
 import { Route,Switch } from 'react-router-dom';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -13,11 +14,11 @@ import { CfmanagementInfo, CrowdfundingInfo } from "./utils/constants"
 import { CrowdfundingProvider } from './contexts/crowdfunding_context';
 
 function App() {
-  const [cfmanagement, setCfmanagement] = useState();
-  const [crowdfundings, setCrowdfundings] = useState([]);
-  const [cfsAddress, setCfsAddress] = useState([]);
-  const [provider, setProvider] = useState();
-  const [signer, setSigner] = useState();
+  // const [cfmanagement, setCfmanagement] = useState();
+  // const [crowdfundings, setCrowdfundings] = useState([]);
+  // const [cfsAddress, setCfsAddress] = useState([]);
+  // const [provider, setProvider] = useState();
+  // const [signer, setSigner] = useState();
 
   // useEffect(() => {
   //   const initCfmanagement = async () => {
@@ -96,6 +97,7 @@ function App() {
         <Navigator/>
         <Switch>
           <Route path="/createNewProj" component={Create}/>
+          <Route path="/contribute" component={Contribute}/>
           <Route path="/" component={Display}/>
         </Switch>
       </div>

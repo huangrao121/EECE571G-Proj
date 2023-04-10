@@ -17,8 +17,8 @@ export default class create extends Component {
       title: 'test',
       description: 'test',
       duration: 30 * 24 * 60 * 60,
-      targetedAmount: 10,
-      minContribution: 2,
+      targetedAmount: 0,
+      minContribution: 0,
     };
   }
 
@@ -54,6 +54,7 @@ export default class create extends Component {
             height: 700,
             mx:'auto',
             mt:10,
+            mb:10,
             p:5,
             border:1,
             borderRadius:2
@@ -80,29 +81,34 @@ export default class create extends Component {
             />
             <TextField
               fullWidth 
-              label="Targeted amount of project"
-              id="outlined-size-normal"
+              label="Targeted amount of contribution"
+              id="outlined-number"
               margin="normal"
+              type="number"
               onChange={(e) => this.setState({targetedAmount: e.target.value})}
             />
+
+          <TextField
+            fullWidth
+            id="outlined-number"
+            label="Minimum Contribution"
+            type="number"
+            margin="normal"
+            onChange={(e) => this.setState({minContribution: e.target.value})}
+          />
+
             <TextField
               fullWidth 
-              label="Minimum Contribution"
-              id="outlined-size-normal"
-              margin="normal"
-              onChange={(e) => this.setState({minContribution: e.target.value})}
-            />
-            <TextField
-              fullWidth 
-              label="Duration"
-              id="outlined-size-normal"
+              label="Duration (Days)"
+              id="outlined-number"
+              type="number"
               margin="normal"
               onChange={(e) => this.setState({duration: e.target.value})}
             />
             <Box>
-              <Button variant="outlined" sx={{mt:5, mr: 5}} onClick={handleSubmit}>Submit</Button>
+              <Button variant="outlined" sx={{mt:5, mr: 5}} onClick={handleSubmit} color='success'>Submit</Button>
               <NavLink to="/">
-                <Button variant="contained" sx={{mt:5, ml: 5}}>Cancel</Button>
+                <Button variant="contained" sx={{mt:5, ml: 5}} color='success'>Cancel</Button>
               </NavLink>
               
             </Box>

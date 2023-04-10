@@ -7,17 +7,19 @@ import CardItem from './card/card'
 export default class display extends Component {
   state = {
     cards:[
-      {id:"12",title:"www", endTime:1234,goalAmount:2222,totalRaised:1223},
-      {id:"34",title:"abds", endTime:4444,goalAmount:3232,totalRaised:1377},
-      {id:"56",title:"abds", endTime:4444,goalAmount:3232,totalRaised:1377},
-      {id:"2",title:"abds", endTime:4444,goalAmount:3232,totalRaised:1377}
+      {id:"12",title:"Test project", endTime:1234,goalAmount:2222,totalRaised:1223},
+      // {id:"34",title:"abds", endTime:4444,goalAmount:3232,totalRaised:1377},
+      // {id:"56",title:"abds", endTime:4444,goalAmount:3232,totalRaised:1377},
+      // {id:"2",title:"abds", endTime:4444,goalAmount:3232,totalRaised:1377}
     ]
   }
   render() {
     const cards = this.state.cards
     return (
       <div className='container mt-5'>
-        <Grid container spacing={5}>
+        { cards.length > 0 ?
+
+          <Grid container spacing={5}>
           {
             cards.map(card=>{
               return (
@@ -27,7 +29,10 @@ export default class display extends Component {
               )
             })
           }
-        </Grid>
+          </Grid>
+          :
+          <h2>No project found...</h2>
+        }
       </div>
     )
   }
