@@ -40,7 +40,7 @@ export default class contribute extends Component{
                 <Box
                     sx={{
                         width: 1200,
-                        height: 700,
+                        height: 900,
                         mx:'auto',
                         mt:10,
                         mb:10,
@@ -54,25 +54,25 @@ export default class contribute extends Component{
                     Project details
                 </Typography>
                 <div>
-                    <Typography variant="h5" >
+                    <Typography variant="h5" sx={{mb:3}}>
                         Title
                     </Typography>
                     <p>Test project</p>
                 </div>
                 <div>
-                    <Typography variant="h5" >
+                    <Typography variant="h5" sx={{mb:3}} >
                         Description
                     </Typography>
                     <p>Testing description.</p> 
                 </div>
                 <div>
-                    <Typography variant="h5" >
+                    <Typography variant="h5" sx={{mb:3}}>
                         Targeted amount of contribution
                     </Typography>
-                    <p>asdfasdf ETH</p>
+                    <p>5.0 ETH</p>
                 </div>
                 <div>
-                    <Typography variant="h5" >
+                    <Typography variant="h5" sx={{mb:3}}>
                         Contribution amount
                     </Typography>
                     <form>
@@ -86,11 +86,22 @@ export default class contribute extends Component{
                         }
                         />
                     </form>
-                </div> 
+                </div>
                 <div>
+                    <Typography variant="h5" sx={{mt:3, mb:3}}>
+                        Remain days
+                    </Typography>
                     <BorderLinearProgress variant="determinate" 
                     sx={{mt:5}}
-                    value={10} />
+                    value={99} />
+                </div> 
+                <div>
+                    <Typography variant="h5" sx={{mt:3, mb:3}}>
+                        Progress
+                    </Typography>
+                    <BorderLinearProgress variant="determinate" 
+                    sx={{mt:5}}
+                    value={0} />
                 </div>
 
                 <Box align="center">

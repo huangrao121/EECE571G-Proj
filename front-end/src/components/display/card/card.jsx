@@ -31,7 +31,7 @@ export default class card_item extends Component {
             borderRadius: 5
           }}
           variant="determinate"
-           value={10}
+           value={0}
            color="success"
            >
           </LinearProgress>

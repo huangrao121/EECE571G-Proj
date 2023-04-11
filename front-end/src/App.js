@@ -3,7 +3,7 @@ import Navigator from './components/navigator/navigator'
 import Create from './components/create/create'
 import Display from './components/display/display'
 import Contribute from './components/contribute/contribute';
-import { Route,Switch } from 'react-router-dom';
+import { Route,Routes } from 'react-router-dom';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -95,11 +95,11 @@ function App() {
     <CrowdfundingProvider>
       <div className="App">
         <Navigator/>
-        <Switch>
-          <Route path="/createNewProj" component={Create}/>
-          <Route path="/contribute" component={Contribute}/>
-          <Route path="/" component={Display}/>
-        </Switch>
+        <Routes>
+          <Route path="/createNewProj" element={<Create/>}/>
+          <Route path="/contribute" element={<Contribute/>}/>
+          <Route path="/" element={<Display/>}/>
+        </Routes>
       </div>
     </CrowdfundingProvider>
   );
